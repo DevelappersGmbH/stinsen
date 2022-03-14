@@ -5,6 +5,7 @@ struct TabChildItem {
     let presentable: ViewPresentable
     let keyPathIsEqual: (Any) -> Bool
     let tabItem: (Bool) -> AnyView
+    let onPopToRoot: () -> Void
 }
 
 /// Wrapper around childCoordinators
@@ -16,10 +17,19 @@ public class TabChild: ObservableObject {
     @Published var activeItem: TabChildItem!
     
     var allItems: [TabChildItem]!
+    var isFirstTime: Bool = true
     
     public var activeTab: Int {
         didSet {
-            guard oldValue != activeTab else { return }
+            guard oldValue != activeTab else {
+                if isFirstTime {
+                    isFirstTime = false
+                    allItems[activeTab].onPopToRoot()
+                    isFirstTime = true
+                }
+                return
+            }
+            
             let newItem = allItems[activeTab]
             self.activeItem = newItem
         }
