@@ -77,6 +77,9 @@ public extension TabCoordinatable {
                         },
                         tabItem: { [unowned self] in
                             val.tabItem(active: $0, coordinator: self)
+                        },
+                        onPopToRoot: {
+                            val.onPopToRoot(coordinator: self)
                         }
                     )
                 )
